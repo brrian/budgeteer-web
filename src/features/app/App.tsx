@@ -4,8 +4,9 @@ import React, { Component } from 'react';
 import { ApolloProvider } from 'react-apollo';
 import { RouteComponentProps, Switch } from 'react-router';
 import { AuthRoute, UnauthRoute } from 'react-router-auth';
-import BasePage from './pages/base/BasePage';
-import LoginPage from './pages/login/LoginPage';
+import ReactTooltip from 'react-tooltip';
+import BasePage from '../../pages/base/BasePage';
+import LoginPage from '../../pages/login/LoginPage';
 
 interface AppState {
   isAuthenticated: boolean;
@@ -72,10 +73,11 @@ class App extends Component<{}, AppState> {
           <AuthRoute
             authenticated={isAuthenticated}
             component={BasePage}
-            path="/"
+            path="/:month?/:year?"
             redirectTo="/login"
           />
         </Switch>
+        <ReactTooltip />
       </ApolloProvider>
     );
   }

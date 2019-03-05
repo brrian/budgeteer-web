@@ -1,0 +1,88 @@
+@import '../../global/styles/utils.scss';
+
+.transactions {
+  &-table {
+    margin-bottom: 1.5rem;
+
+    @include media('<=tablet') {
+      font-size: 14px;
+    }
+  }
+
+  &-row {
+    border-bottom: 1px solid $grey-lighter;
+    display: flex;
+    padding-left: 12px;
+    padding-right: 12px;
+    position: relative;
+
+    &.is-heading {
+      border-bottom-width: 2px;
+      font-weight: bold;
+    }
+
+    &__actions {
+      align-items: center;
+      background-color: #fff;
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, #fff 15%);
+      display: none;
+      height: 100%;
+      padding-left: 42px;
+      position: absolute;
+      right: 0;
+      white-space: nowrap;
+
+      @at-root .transactions-row:hover .transactions-row__actions {
+        display: flex;
+      }
+    }
+
+    &__labels {
+      align-items: center;
+      display: flex;
+      flex-grow: 1;
+
+      > div {
+        padding: 8px 4px;
+      }
+    }
+
+    &__date {
+      width: 12%;
+    }
+
+    &__description {
+      width: 41%;
+
+      &.is-split {
+        &:before {
+          content: 'Split';
+          font-size: 12px;
+          color: $grey;
+          text-transform: uppercase;
+          line-height: 1;
+        }
+      }
+    }
+
+    &__category {
+      width: 32%;
+    }
+  }
+
+  &-modal {
+    max-width: 360px;
+
+    &__button {
+      background: transparent;
+      border: none;
+      color: $link;
+      cursor: pointer;
+      font-size: $size-normal;
+
+      &:hover {
+        color: $link-hover;
+      }
+    }
+  }
+}

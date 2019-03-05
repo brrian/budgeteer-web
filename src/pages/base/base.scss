@@ -1,0 +1,39 @@
+@import '../../global/styles/utils.scss';
+
+.base {
+  &-container {
+    @include media('<=tablet') {
+      padding-top: 1rem;
+      padding-bottom: 5rem;
+    }
+  }
+
+  &-header {
+    display: flex;
+
+    @include media('<=tablet') {
+      bottom: 0;
+      left: 0;
+      position: fixed;
+      width: 100%;
+      z-index: 40;
+      background-color: #fff;
+      border-top: 1px solid #ccc;
+    }
+
+    &__date {
+      flex-grow: 1;
+    }
+  }
+
+  &-layout {
+    @include media('<=tablet') {
+      display: flex;
+      flex-direction: column;
+
+      &__transactions {
+        order: 1;
+      }
+    }
+  }
+}

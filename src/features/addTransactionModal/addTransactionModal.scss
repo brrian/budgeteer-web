@@ -1,0 +1,18 @@
+@import '../../global/styles/utils.scss';
+
+.addTransactionModal {
+  &-dayPicker {
+    &__overlay {
+      position: relative;
+    }
+
+    &__calendar {
+      background-color: #fff;
+      border-radius: 4px;
+      box-shadow: 0 2px 3px rgba($black, 0.1), 0 0 0 1px rgba($black, 0.1);
+      position: absolute;
+      top: 4px;
+      z-index: 10;
+    }
+  }
+}

@@ -1,0 +1,66 @@
+@import 'bulma/sass/utilities/_all.sass';
+@import '../../global/styles/utils.scss';
+
+.budget {
+  @include media('>tablet') {
+    margin-top: -60px;
+    position: sticky;
+    top: 32px;
+  }
+
+  &-totals {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+
+    &__divider {
+      display: inline-block;
+      margin-left: 6px;
+      margin-right: 6px;
+    }
+
+    &__limit {
+      border-bottom: 2px solid transparent;
+
+      &.is-over {
+        border-bottom-color: $danger;
+      }
+
+      &.is-under {
+        border-bottom-color: $success;
+      }
+    }
+  }
+
+  &-category {
+    margin-bottom: 16px;
+    text-align: center;
+
+    &__progress {
+      position: relative;
+    }
+
+    &__delta {
+      align-items: center;
+      color: rgba(#fff, .8);
+      display: flex;
+      font-size: 12px;
+      font-weight: bold;
+      height: 100%;
+      justify-content: flex-end;
+      line-height: 1;
+      padding-right: 6px;
+      position: absolute;
+    }
+
+    &__marker {
+      position: absolute;
+      z-index: 10;
+      display: inline-block;
+      width: 1px;
+      height: 100%;
+      background-color: rgba(#000, .16);
+    }
+  }
+}
