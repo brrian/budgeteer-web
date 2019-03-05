@@ -1,13 +1,26 @@
-import React, { Component } from 'react';
+import React, { Component, FormEvent } from 'react';
+import { RouteComponentProps } from 'react-router';
 import './loginPage.scss';
 
-class LoginPage extends Component {
+interface LoginPageOwnProps extends RouteComponentProps {
+  updateAuthStatus: (status: boolean) => void;
+}
+
+class LoginPage extends Component<LoginPageOwnProps> {
+  handleFormSubmit = (event: FormEvent) => {
+    event.preventDefault();
+
+    localStorage.setItem('token', 'value');
+
+    this.props.updateAuthStatus(true);
+  };
+
   render() {
     return (
       <div className="login-page section">
         <div className="columns is-centered">
           <div className="column is-3-desktop is-5-tablet">
-            <form>
+            <form onSubmit={this.handleFormSubmit}>
               <div className="field">
                 <label className="label">Email</label>
                 <div className="control">
