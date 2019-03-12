@@ -1,21 +1,33 @@
 import classnames from 'classnames';
 import { format, parse } from 'date-fns';
 import React, { SFC } from 'react';
-import { Transaction as TransactionItem } from '../Transactions';
-import Split from './Split';
+import { Split, Transaction } from '../../../pages/base/store';
+import SplitRow from './SplitRow';
 
-interface TransactionProps {
+interface TransactionRowProps {
   getCategory: (id: number) => string;
+  pos: string;
   setModal: (modal: string) => void;
-  transaction: TransactionItem;
+  transaction: Transaction;
+  updateTransaction: (
+    type: string,
+    pos: string,
+    transaction: Partial<Transaction | Split>
+  ) => void;
 }
 
-const Transaction: SFC<TransactionProps> = ({
+const TransactionRow: SFC<TransactionRowProps> = ({
   getCategory,
+  pos,
   setModal,
   transaction,
+  updateTransaction,
 }) => {
   const date = parse(transaction.date);
+
+  const handleToggleClick = () => {
+    updateTransaction('transaction', pos, { disabled: !transaction.disabled });
+  };
 
   return (
     <>
@@ -34,11 +46,9 @@ const Transaction: SFC<TransactionProps> = ({
             >
               Update
             </button>
-            {transaction.disabled ? (
-              <button className="button">Enable</button>
-            ) : (
-              <button className="button">Disable</button>
-            )}
+            <button className="button" onClick={handleToggleClick}>
+              {transaction.disabled ? 'Enable' : 'Disable'}
+            </button>
           </div>
         </div>
         <div
@@ -68,16 +78,18 @@ const Transaction: SFC<TransactionProps> = ({
           </div>
         </div>
       </div>
-      {transaction.splits.map(split => (
-        <Split
+      {transaction.splits.map((split, index) => (
+        <SplitRow
           getCategory={getCategory}
           key={split.id}
+          pos={`${pos}.splits[${index}]`}
           setModal={setModal}
           split={split}
+          updateTransaction={updateTransaction}
         />
       ))}
     </>
   );
 };
 
-export default Transaction;
+export default TransactionRow;

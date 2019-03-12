@@ -1,14 +1,30 @@
 import classnames from 'classnames';
 import React, { SFC } from 'react';
-import { Split as SplitItem } from '../Transactions';
+import { Split, Transaction } from '../../../pages/base/store';
 
-interface SplitProps {
+interface SplitRowProps {
   getCategory: (id: number) => string;
+  pos: string;
   setModal: (modal: string) => void;
-  split: SplitItem;
+  split: Split;
+  updateTransaction: (
+    type: string,
+    pos: string,
+    transaction: Partial<Transaction | Split>
+  ) => void;
 }
 
-const Split: SFC<SplitProps> = ({ getCategory, setModal, split }) => {
+const SplitRow: SFC<SplitRowProps> = ({
+  getCategory,
+  pos,
+  setModal,
+  split,
+  updateTransaction,
+}) => {
+  const handleToggleClick = () => {
+    updateTransaction('split', pos, { disabled: !split.disabled });
+  };
+
   return (
     <div className="transactions-row">
       <div className="transactions-row__actions">
@@ -17,9 +33,13 @@ const Split: SFC<SplitProps> = ({ getCategory, setModal, split }) => {
             Update
           </button>
           {split.disabled ? (
-            <button className="button">Enable</button>
+            <button className="button" onClick={handleToggleClick}>
+              Enable
+            </button>
           ) : (
-            <button className="button">Disable</button>
+            <button className="button" onClick={handleToggleClick}>
+              Disable
+            </button>
           )}
         </div>
       </div>
@@ -47,4 +67,4 @@ const Split: SFC<SplitProps> = ({ getCategory, setModal, split }) => {
   );
 };
 
-export default Split;
+export default SplitRow;

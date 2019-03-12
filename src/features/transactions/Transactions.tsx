@@ -1,37 +1,27 @@
 import React, { SFC, useEffect, useState } from 'react';
 import ReactTooltip from 'react-tooltip';
-import { Categories } from '../../pages/base/BasePage';
-import SplitTransaction from './components/SplitTransaction';
-import Transaction from './components/Transaction';
-import UpdateSplit from './components/UpdateSplit';
-import UpdateTransaction from './components/UpdateTransaction';
+import { Categories, Split, Transaction } from '../../pages/base/store';
+import SplitTransactionModal from './components/SplitTransactionModal';
+import TransactionRow from './components/TransactionRow';
+import UpdateSplitModal from './components/UpdateSplitModal';
+import UpdateTransactionModal from './components/UpdateTransactionModal';
 import './transactions.scss';
-
-export interface Transaction {
-  amount: number;
-  categoryId: number;
-  date: string;
-  description: string;
-  disabled: boolean;
-  id: string;
-  note?: string;
-  splits: Split[];
-}
-
-export interface Split {
-  amount: number;
-  categoryId: number;
-  disabled: boolean;
-  id: string;
-  note?: string;
-}
 
 interface TransactionsProps {
   categories: Categories;
   transactions: Transaction[];
+  updateTransaction: (
+    type: string,
+    pos: string,
+    transaction: Partial<Transaction | Split>
+  ) => void;
 }
 
-const Transactions: SFC<TransactionsProps> = ({ categories, transactions }) => {
+const Transactions: SFC<TransactionsProps> = ({
+  categories,
+  transactions,
+  updateTransaction,
+}) => {
   const [modal, setModal] = useState<string | boolean>(false);
 
   const handleModalClose = () => setModal(false);
@@ -53,12 +43,14 @@ const Transactions: SFC<TransactionsProps> = ({ categories, transactions }) => {
             <div className="transactions-row__amount">Amount</div>
           </div>
         </div>
-        {transactions.map(transaction => (
-          <Transaction
+        {transactions.map((transaction, index) => (
+          <TransactionRow
             getCategory={getCategory}
             key={transaction.id}
+            pos={`[${index}]`}
             setModal={setModal}
             transaction={transaction}
+            updateTransaction={updateTransaction}
           />
         ))}
       </div>
@@ -66,11 +58,11 @@ const Transactions: SFC<TransactionsProps> = ({ categories, transactions }) => {
         (() => {
           switch (modal) {
             case 'split-transaction':
-              return <SplitTransaction closeModal={handleModalClose} />;
+              return <SplitTransactionModal closeModal={handleModalClose} />;
             case 'update-transaction':
-              return <UpdateTransaction closeModal={handleModalClose} />;
+              return <UpdateTransactionModal closeModal={handleModalClose} />;
             case 'update-split':
-              return <UpdateSplit closeModal={handleModalClose} />;
+              return <UpdateSplitModal closeModal={handleModalClose} />;
             default:
               return null;
           }
