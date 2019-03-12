@@ -1,32 +1,46 @@
-import { format } from 'date-fns';
+import { startOfMonth } from 'date-fns';
 
-export const getMonth = (abbr?: string) => {
-  if (!abbr) {
-    return format(new Date(), 'MM');
+export const getDate = (month?: string, year?: string) => {
+  const date = startOfMonth(new Date());
+
+  if (month) {
+    date.setMonth(getMonth(month));
   }
 
+  if (year) {
+    date.setFullYear(+year);
+  }
+
+  return date;
+};
+
+const getMonth = (abbr: string) => {
   switch (abbr.toLowerCase()) {
     case 'jan':
-      return '01';
+      return 0;
     case 'feb':
-      return '02';
+      return 1;
     case 'mar':
-      return '03';
+      return 2;
     case 'apr':
-      return '04';
+      return 3;
     case 'may':
-      return '05';
+      return 4;
     case 'jun':
-      return '06';
+      return 5;
     case 'jul':
-      return '07';
+      return 6;
     case 'aug':
-      return '08';
+      return 7;
     case 'sep':
     case 'sept':
-      return '09';
+      return 8;
+    case 'oct':
+      return 9;
+    case 'nov':
+      return 10;
     case 'dec':
-      return '12';
+      return 11;
     default:
       throw new Error(`Unrecognized month "${abbr}"`);
   }
