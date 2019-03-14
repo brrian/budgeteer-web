@@ -1,12 +1,13 @@
 import React, { SFC, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
+import { Modal } from '../../pages/base/BasePage';
 import { Categories, Split, Transaction } from '../../pages/base/store';
 import TransactionRow from './components/TransactionRow';
 import './transactions.scss';
 
 interface TransactionsProps {
   categories: Categories;
-  setModal: (modal: string) => void;
+  setModal: (modal: Modal) => void;
   transactions: Transaction[];
   updateTransaction: (
     type: string,

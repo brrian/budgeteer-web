@@ -1,11 +1,12 @@
 import classnames from 'classnames';
 import React, { SFC } from 'react';
+import { Modal } from '../../../pages/base/BasePage';
 import { Split, Transaction } from '../../../pages/base/store';
 
 interface SplitRowProps {
   getCategory: (id: number) => string;
   pos: string;
-  setModal: (modal: string) => void;
+  setModal: (modal: Modal) => void;
   split: Split;
   updateTransaction: (
     type: string,
@@ -29,7 +30,10 @@ const SplitRow: SFC<SplitRowProps> = ({
     <div className="transactions-row">
       <div className="transactions-row__actions">
         <div className="buttons has-addons are-small">
-          <button className="button" onClick={() => setModal('update-split')}>
+          <button
+            className="button"
+            onClick={() => setModal({ id: 'update-split' })}
+          >
             Update
           </button>
           {split.disabled ? (

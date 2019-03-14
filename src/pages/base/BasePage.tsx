@@ -20,6 +20,14 @@ interface UserData {
   transactions: Transaction[];
 }
 
+export type Modal =
+  | {
+      id: string;
+      data?: any;
+      meta?: any;
+    }
+  | false;
+
 interface RouteParams {
   month?: string;
   year?: string;
@@ -30,7 +38,7 @@ interface BasePageProps extends RouteComponentProps<RouteParams> {
 }
 
 const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
-  const [modal, setModal] = useState<string | false>(false);
+  const [modal, setModal] = useState<Modal>(false);
   const [store, dispatch] = createStore();
 
   const date = getDate(params.month, params.year);
@@ -47,6 +55,8 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
   }, [params.month, params.year]);
 
   const closeModal = () => setModal(false);
+
+  const openAddTransactionModal = () => setModal({ id: 'add-transaction' });
 
   const updateTransaction = (
     type: string,
@@ -71,12 +81,12 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
             {format(date, 'MMMM YYYY')}
           </h2>
           <span className="is-hidden-tablet">
-            <a onClick={() => setModal('add-transaction')}>Add transaction</a>
+            <a onClick={openAddTransactionModal}>Add transaction</a>
           </span>
           <span className="is-hidden-mobile">
             <button
               className="button is-info"
-              onClick={() => setModal('add-transaction')}
+              onClick={openAddTransactionModal}
             >
               Add transaction
             </button>
@@ -104,13 +114,21 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
       </div>
       {modal &&
         (() => {
-          switch (modal) {
+          switch (modal.id) {
             case 'add-transaction':
               return <AddTransactionModal closeModal={closeModal} />;
             case 'split-transaction':
               return <SplitTransactionModal closeModal={closeModal} />;
             case 'update-transaction':
-              return <UpdateTransactionModal closeModal={closeModal} />;
+              return (
+                <UpdateTransactionModal
+                  categories={store.categories}
+                  closeModal={closeModal}
+                  meta={modal.meta}
+                  transaction={modal.data}
+                  updateTransaction={updateTransaction}
+                />
+              );
             case 'update-split':
               return <UpdateSplitModal closeModal={closeModal} />;
             default:

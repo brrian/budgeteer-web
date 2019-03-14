@@ -1,13 +1,14 @@
 import classnames from 'classnames';
 import { format, parse } from 'date-fns';
 import React, { SFC } from 'react';
+import { Modal } from '../../../pages/base/BasePage';
 import { Split, Transaction } from '../../../pages/base/store';
 import SplitRow from './SplitRow';
 
 interface TransactionRowProps {
   getCategory: (id: number) => string;
   pos: string;
-  setModal: (modal: string) => void;
+  setModal: (modal: Modal) => void;
   transaction: Transaction;
   updateTransaction: (
     type: string,
@@ -29,6 +30,13 @@ const TransactionRow: SFC<TransactionRowProps> = ({
     updateTransaction('transaction', pos, { disabled: !transaction.disabled });
   };
 
+  const handleModalOpen = (id: string) =>
+    setModal({
+      id,
+      data: transaction,
+      meta: { pos },
+    });
+
   return (
     <>
       <div className="transactions-row">
@@ -36,13 +44,13 @@ const TransactionRow: SFC<TransactionRowProps> = ({
           <div className="buttons are-small has-addons">
             <button
               className="button"
-              onClick={() => setModal('split-transaction')}
+              onClick={() => handleModalOpen('split-transaction')}
             >
               Split
             </button>
             <button
               className="button"
-              onClick={() => setModal('update-transaction')}
+              onClick={() => handleModalOpen('update-transaction')}
             >
               Update
             </button>

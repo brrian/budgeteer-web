@@ -26,7 +26,11 @@ const ConfirmationButton: SFC<ConfirmationButton> = ({
   const text = !clicked ? label : 'Confirm';
 
   return (
-    <button className={`button ${classNames}`} onClick={handleButtonClick}>
+    <button
+      className={`button ${classNames}`}
+      onClick={handleButtonClick}
+      type="button"
+    >
       {text}
     </button>
   );
