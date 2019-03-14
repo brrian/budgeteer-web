@@ -6,7 +6,7 @@ interface UpdateSplit {
   closeModal: () => void;
 }
 
-const UpdateSplit: SFC<UpdateSplit> = ({ closeModal }) => (
+const UpdateSplitModal: SFC<UpdateSplit> = ({ closeModal }) => (
   <Modal closeModal={closeModal}>
     <h3>Update split</h3>
     <form>
@@ -50,4 +50,4 @@ const UpdateSplit: SFC<UpdateSplit> = ({ closeModal }) => (
   </Modal>
 );
 
-export default UpdateSplit;
+export default UpdateSplitModal;

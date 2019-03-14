@@ -1,14 +1,12 @@
-import React, { SFC, useEffect, useState } from 'react';
+import React, { SFC, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
 import { Categories, Split, Transaction } from '../../pages/base/store';
-import SplitTransactionModal from './components/SplitTransactionModal';
 import TransactionRow from './components/TransactionRow';
-import UpdateSplitModal from './components/UpdateSplitModal';
-import UpdateTransactionModal from './components/UpdateTransactionModal';
 import './transactions.scss';
 
 interface TransactionsProps {
   categories: Categories;
+  setModal: (modal: string) => void;
   transactions: Transaction[];
   updateTransaction: (
     type: string,
@@ -19,13 +17,10 @@ interface TransactionsProps {
 
 const Transactions: SFC<TransactionsProps> = ({
   categories,
+  setModal,
   transactions,
   updateTransaction,
 }) => {
-  const [modal, setModal] = useState<string | boolean>(false);
-
-  const handleModalClose = () => setModal(false);
-
   const getCategory = (id: number) => categories[id];
 
   useEffect(() => {
@@ -54,19 +49,6 @@ const Transactions: SFC<TransactionsProps> = ({
           />
         ))}
       </div>
-      {modal &&
-        (() => {
-          switch (modal) {
-            case 'split-transaction':
-              return <SplitTransactionModal closeModal={handleModalClose} />;
-            case 'update-transaction':
-              return <UpdateTransactionModal closeModal={handleModalClose} />;
-            case 'update-split':
-              return <UpdateSplitModal closeModal={handleModalClose} />;
-            default:
-              return null;
-          }
-        })()}
     </div>
   );
 };

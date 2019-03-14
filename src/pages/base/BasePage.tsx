@@ -8,6 +8,9 @@ import { Link } from 'react-router-dom';
 import AddTransactionModal from '../../features/addTransactionModal/AddTransactionModal';
 import { Budget } from '../../features/budget';
 import { Transactions } from '../../features/transactions';
+import SplitTransactionModal from '../../features/transactions/components/SplitTransactionModal';
+import UpdateSplitModal from '../../features/transactions/components/UpdateSplitModal';
+import UpdateTransactionModal from '../../features/transactions/components/UpdateTransactionModal';
 import './base.scss';
 import { getDate } from './helpers';
 import { Categories, createStore, Split, Transaction } from './store';
@@ -27,7 +30,7 @@ interface BasePageProps extends RouteComponentProps<RouteParams> {
 }
 
 const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
-  const [addTransactionModalOpen, setAddTransactionModalOpen] = useState(false);
+  const [modal, setModal] = useState<string | false>(false);
   const [store, dispatch] = createStore();
 
   const date = getDate(params.month, params.year);
@@ -43,9 +46,7 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
       );
   }, [params.month, params.year]);
 
-  const toggleTransactionModal = () => {
-    setAddTransactionModalOpen(!addTransactionModalOpen);
-  };
+  const closeModal = () => setModal(false);
 
   const updateTransaction = (
     type: string,
@@ -70,10 +71,13 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
             {format(date, 'MMMM YYYY')}
           </h2>
           <span className="is-hidden-tablet">
-            <a onClick={toggleTransactionModal}>Add transaction</a>
+            <a onClick={() => setModal('add-transaction')}>Add transaction</a>
           </span>
           <span className="is-hidden-mobile">
-            <button className="button is-info" onClick={toggleTransactionModal}>
+            <button
+              className="button is-info"
+              onClick={() => setModal('add-transaction')}
+            >
               Add transaction
             </button>
           </span>
@@ -82,6 +86,7 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
           <div className="base-layout__transactions column is-8">
             <Transactions
               categories={store.categories}
+              setModal={setModal}
               transactions={store.transactions}
               updateTransaction={updateTransaction}
             />
@@ -97,9 +102,21 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
           </div>
         </div>
       </div>
-      {addTransactionModalOpen && (
-        <AddTransactionModal closeModal={toggleTransactionModal} />
-      )}
+      {modal &&
+        (() => {
+          switch (modal) {
+            case 'add-transaction':
+              return <AddTransactionModal closeModal={closeModal} />;
+            case 'split-transaction':
+              return <SplitTransactionModal closeModal={closeModal} />;
+            case 'update-transaction':
+              return <UpdateTransactionModal closeModal={closeModal} />;
+            case 'update-split':
+              return <UpdateSplitModal closeModal={closeModal} />;
+            default:
+              return null;
+          }
+        })()}
     </div>
   );
 };

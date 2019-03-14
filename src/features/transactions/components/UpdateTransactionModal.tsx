@@ -6,7 +6,9 @@ interface UpdateTransactionProps {
   closeModal: () => void;
 }
 
-const UpdateTransaction: SFC<UpdateTransactionProps> = ({ closeModal }) => (
+const UpdateTransactionModal: SFC<UpdateTransactionProps> = ({
+  closeModal,
+}) => (
   <Modal closeModal={closeModal}>
     <h3>Update transaction</h3>
     <form>
@@ -50,4 +52,4 @@ const UpdateTransaction: SFC<UpdateTransactionProps> = ({ closeModal }) => (
   </Modal>
 );
 
-export default UpdateTransaction;
+export default UpdateTransactionModal;

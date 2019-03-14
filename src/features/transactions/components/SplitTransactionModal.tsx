@@ -5,7 +5,7 @@ interface SplitTransactionProps {
   closeModal: () => void;
 }
 
-const SplitTransaction: SFC<SplitTransactionProps> = ({ closeModal }) => (
+const SplitTransactionModal: SFC<SplitTransactionProps> = ({ closeModal }) => (
   <Modal closeModal={closeModal}>
     <h3>Split transaction</h3>
     <form>
@@ -52,4 +52,4 @@ const SplitTransaction: SFC<SplitTransactionProps> = ({ closeModal }) => (
   </Modal>
 );
 
-export default SplitTransaction;
+export default SplitTransactionModal;
