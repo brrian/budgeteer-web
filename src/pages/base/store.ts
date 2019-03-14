@@ -3,7 +3,7 @@ import { set } from 'lodash';
 import { useReducer } from 'react';
 
 export interface Categories {
-  [key: number]: string;
+  [key: string]: string;
 }
 
 export interface Transaction {
