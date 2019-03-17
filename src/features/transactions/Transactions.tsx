@@ -1,29 +1,14 @@
 import React, { SFC, useEffect } from 'react';
 import ReactTooltip from 'react-tooltip';
-import { Modal } from '../../pages/base/BasePage';
-import { Categories, Split, Transaction } from '../../pages/base/store';
+import { Transaction } from '../../pages/base/store';
 import TransactionRow from './components/TransactionRow';
 import './transactions.scss';
 
 interface TransactionsProps {
-  categories: Categories;
-  setModal: (modal: Modal) => void;
   transactions: Transaction[];
-  updateTransaction: (
-    type: string,
-    pos: string,
-    transaction: Partial<Transaction | Split>
-  ) => void;
 }
 
-const Transactions: SFC<TransactionsProps> = ({
-  categories,
-  setModal,
-  transactions,
-  updateTransaction,
-}) => {
-  const getCategory = (id: number) => categories[id];
-
+const Transactions: SFC<TransactionsProps> = ({ transactions }) => {
   useEffect(() => {
     ReactTooltip.rebuild();
   }, [transactions]);
@@ -41,12 +26,9 @@ const Transactions: SFC<TransactionsProps> = ({
         </div>
         {transactions.map((transaction, index) => (
           <TransactionRow
-            getCategory={getCategory}
             key={transaction.id}
             pos={`[${index}]`}
-            setModal={setModal}
             transaction={transaction}
-            updateTransaction={updateTransaction}
           />
         ))}
       </div>

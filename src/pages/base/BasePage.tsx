@@ -6,11 +6,9 @@ import { withApollo } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import AddTransactionModal from '../../features/addTransactionModal/AddTransactionModal';
+import { AppContext } from '../../features/app';
 import { Budget } from '../../features/budget';
 import { Transactions } from '../../features/transactions';
-import SplitTransactionModal from '../../features/transactions/components/SplitTransactionModal';
-import UpdateSplitModal from '../../features/transactions/components/UpdateSplitModal';
-import UpdateTransactionModal from '../../features/transactions/components/UpdateTransactionModal';
 import './base.scss';
 import { getDate } from './helpers';
 import { Categories, createStore, Split, Transaction } from './store';
@@ -19,14 +17,6 @@ interface UserData {
   categories: Categories;
   transactions: Transaction[];
 }
-
-export type Modal =
-  | {
-      id: string;
-      data?: any;
-      meta?: any;
-    }
-  | false;
 
 interface RouteParams {
   month?: string;
@@ -38,7 +28,7 @@ interface BasePageProps extends RouteComponentProps<RouteParams> {
 }
 
 const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
-  const [modal, setModal] = useState<Modal>(false);
+  const [modal, setModal] = useState<string | false>(false);
   const [store, dispatch] = createStore();
 
   const date = getDate(params.month, params.year);
@@ -56,7 +46,7 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
 
   const closeModal = () => setModal(false);
 
-  const openAddTransactionModal = () => setModal({ id: 'add-transaction' });
+  const openAddTransactionModal = () => setModal('add-transaction');
 
   const updateTransaction = (
     type: string,
@@ -74,68 +64,51 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
   };
 
   return (
-    <div className="base-container section">
-      <div className="container">
-        <div className="base-header column is-8">
-          <h2 className="base-header__date is-size-6 is-size-4-tablet">
-            {format(date, 'MMMM YYYY')}
-          </h2>
-          <span className="is-hidden-tablet">
-            <a onClick={openAddTransactionModal}>Add transaction</a>
-          </span>
-          <span className="is-hidden-mobile">
-            <button
-              className="button is-info"
-              onClick={openAddTransactionModal}
-            >
-              Add transaction
-            </button>
-          </span>
-        </div>
-        <div className="base-layout columns">
-          <div className="base-layout__transactions column is-8">
-            <Transactions
-              categories={store.categories}
-              setModal={setModal}
-              transactions={store.transactions}
-              updateTransaction={updateTransaction}
-            />
-            <Link
-              className="button is-light"
-              to={format(prevMonth, '/MMM/YYYY').toLowerCase()}
-            >
-              Previous month
-            </Link>
+    <AppContext.Provider
+      value={{
+        categories: store.categories,
+        closeModal,
+        modal,
+        setModal,
+        updateTransaction,
+      }}
+    >
+      <div className="base-container section">
+        <div className="container">
+          <div className="base-header column is-8">
+            <h2 className="base-header__date is-size-6 is-size-4-tablet">
+              {format(date, 'MMMM YYYY')}
+            </h2>
+            <span className="is-hidden-tablet">
+              <a onClick={openAddTransactionModal}>Add transaction</a>
+            </span>
+            <span className="is-hidden-mobile">
+              <button
+                className="button is-info"
+                onClick={openAddTransactionModal}
+              >
+                Add transaction
+              </button>
+            </span>
           </div>
-          <div className="column is-3-desktop is-offset-1-desktop">
-            <Budget />
+          <div className="base-layout columns">
+            <div className="base-layout__transactions column is-8">
+              <Transactions transactions={store.transactions} />
+              <Link
+                className="button is-light"
+                to={format(prevMonth, '/MMM/YYYY').toLowerCase()}
+              >
+                Previous month
+              </Link>
+            </div>
+            <div className="column is-3-desktop is-offset-1-desktop">
+              <Budget />
+            </div>
           </div>
         </div>
+        {modal === 'add-transaction' && <AddTransactionModal />}
       </div>
-      {modal &&
-        (() => {
-          switch (modal.id) {
-            case 'add-transaction':
-              return <AddTransactionModal closeModal={closeModal} />;
-            case 'split-transaction':
-              return <SplitTransactionModal closeModal={closeModal} />;
-            case 'update-transaction':
-              return (
-                <UpdateTransactionModal
-                  categories={store.categories}
-                  closeModal={closeModal}
-                  meta={modal.meta}
-                  transaction={modal.data}
-                  updateTransaction={updateTransaction}
-                />
-              );
-            case 'update-split':
-              return <UpdateSplitModal closeModal={closeModal} />;
-            default:
-              return null;
-          }
-        })()}
-    </div>
+    </AppContext.Provider>
   );
 };
 
