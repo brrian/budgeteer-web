@@ -30,7 +30,7 @@ export interface State {
   transactions: Transaction[];
 }
 
-export type Action = IntializeAction | UpdateTransactionAction;
+export type Action = IntializeAction | SetTransactionAction;
 
 interface IntializeAction {
   type: 'initialize';
@@ -40,8 +40,8 @@ interface IntializeAction {
   };
 }
 
-interface UpdateTransactionAction {
-  type: 'update-transaction';
+interface SetTransactionAction {
+  type: 'set-transaction';
   payload: {
     pos: string;
     transaction: Transaction | Split;
@@ -61,7 +61,7 @@ const reducer = (state: State, action: Action) =>
         draft.transactions = action.payload.transactions;
         return;
       }
-      case 'update-transaction': {
+      case 'set-transaction': {
         set(draft.transactions, action.payload.pos, action.payload.transaction);
         return;
       }

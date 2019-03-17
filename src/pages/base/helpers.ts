@@ -30,7 +30,7 @@ export const updateTransaction = (
       ...updates,
     };
 
-    dispatch({ type: 'update-transaction', payload: { pos, transaction } });
+    dispatch({ type: 'set-transaction', payload: { pos, transaction } });
 
     if (type === 'transaction') {
       client.mutate({ mutation: UPDATE_TRANSACTION, variables: transaction });
