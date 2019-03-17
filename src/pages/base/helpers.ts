@@ -1,4 +1,9 @@
 import { startOfMonth } from 'date-fns';
+import { get } from 'lodash';
+import { Dispatch } from 'react';
+import { Client } from '../../features/app/App';
+import { UPDATE_SPLIT, UPDATE_TRANSACTION } from './gql';
+import { Action, Split, State, Transaction } from './store';
 
 export const getDate = (month?: string, year?: string) => {
   const date = startOfMonth(new Date());
@@ -12,6 +17,27 @@ export const getDate = (month?: string, year?: string) => {
   }
 
   return date;
+};
+
+export const updateTransaction = (
+  store: State,
+  dispatch: Dispatch<Action>,
+  client: Client
+) => {
+  return (type: string, pos: string, updates: Partial<Transaction | Split>) => {
+    const transaction: Transaction | Split = {
+      ...get(store.transactions, pos),
+      ...updates,
+    };
+
+    dispatch({ type: 'update-transaction', payload: { pos, transaction } });
+
+    if (type === 'transaction') {
+      client.mutate({ mutation: UPDATE_TRANSACTION, variables: transaction });
+    } else if (type === 'split') {
+      client.mutate({ mutation: UPDATE_SPLIT, variables: transaction });
+    }
+  };
 };
 
 const getMonth = (abbr: string) => {

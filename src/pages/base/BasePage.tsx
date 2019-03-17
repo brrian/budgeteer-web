@@ -1,17 +1,17 @@
-import { ApolloClient, gql } from 'apollo-boost';
 import { format, subMonths } from 'date-fns';
-import { get } from 'lodash';
 import React, { SFC, useEffect, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
 import { Link } from 'react-router-dom';
 import AddTransactionModal from '../../features/addTransactionModal/AddTransactionModal';
 import { AppContext } from '../../features/app';
+import { Client } from '../../features/app/App';
 import { Budget } from '../../features/budget';
 import { Transactions } from '../../features/transactions';
 import './base.scss';
-import { getDate } from './helpers';
-import { Categories, createStore, Split, Transaction } from './store';
+import { GET_USER_DATA } from './gql';
+import { getDate, updateTransaction } from './helpers';
+import { Categories, createStore, Transaction } from './store';
 
 interface UserData {
   categories: Categories;
@@ -24,7 +24,7 @@ interface RouteParams {
 }
 
 interface BasePageProps extends RouteComponentProps<RouteParams> {
-  client: ApolloClient<{}>;
+  client: Client;
 }
 
 const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
@@ -48,21 +48,6 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
 
   const openAddTransactionModal = () => setModal('add-transaction');
 
-  const updateTransaction = (
-    type: string,
-    pos: string,
-    updates: Partial<Transaction | Split>
-  ) => {
-    const transaction = { ...get(store.transactions, pos), ...updates };
-    dispatch({ type: 'update-transaction', payload: { pos, transaction } });
-
-    if (type === 'transaction') {
-      client.mutate({ mutation: UPDATE_TRANSACTION, variables: transaction });
-    } else if (type === 'split') {
-      client.mutate({ mutation: UPDATE_SPLIT, variables: transaction });
-    }
-  };
-
   return (
     <AppContext.Provider
       value={{
@@ -70,7 +55,7 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
         closeModal,
         modal,
         setModal,
-        updateTransaction,
+        updateTransaction: updateTransaction(store, dispatch, client),
       }}
     >
       <div className="base-container section">
@@ -111,65 +96,5 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
     </AppContext.Provider>
   );
 };
-
-const GET_USER_DATA = gql`
-  query UserData($date: String!) {
-    categories
-    transactions(date: $date) {
-      amount
-      categoryId
-      date
-      description
-      disabled
-      id
-      note
-      splits {
-        amount
-        categoryId
-        disabled
-        id
-        note
-      }
-    }
-  }
-`;
-
-const UPDATE_TRANSACTION = gql`
-  mutation updateTransaction(
-    $categoryId: Int
-    $description: String
-    $disabled: Boolean
-    $id: String!
-    $note: String
-  ) {
-    updateTransaction(
-      categoryId: $categoryId
-      description: $description
-      disabled: $disabled
-      id: $id
-      note: $note
-    ) {
-      disabled
-    }
-  }
-`;
-
-const UPDATE_SPLIT = gql`
-  mutation updateSplit(
-    $categoryId: Int
-    $disabled: Boolean
-    $id: String!
-    $note: String
-  ) {
-    updateSplit(
-      categoryId: $categoryId
-      disabled: $disabled
-      id: $id
-      note: $note
-    ) {
-      disabled
-    }
-  }
-`;
 
 export default withApollo(BasePage);

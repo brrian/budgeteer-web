@@ -25,12 +25,12 @@ export interface Split {
   note?: string;
 }
 
-interface State {
+export interface State {
   categories: Categories;
   transactions: Transaction[];
 }
 
-type Action = IntializeAction | UpdateTransactionAction;
+export type Action = IntializeAction | UpdateTransactionAction;
 
 interface IntializeAction {
   type: 'initialize';
@@ -44,7 +44,7 @@ interface UpdateTransactionAction {
   type: 'update-transaction';
   payload: {
     pos: string;
-    transaction: Partial<Transaction | Split>;
+    transaction: Transaction | Split;
   };
 }
 

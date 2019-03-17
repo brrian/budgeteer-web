@@ -8,12 +8,14 @@ import ReactTooltip from 'react-tooltip';
 import BasePage from '../../pages/base/BasePage';
 import LoginPage from '../../pages/login/LoginPage';
 
+export type Client = ApolloClient<{}>;
+
 interface AppState {
   isAuthenticated: boolean;
 }
 
 class App extends Component<{}, AppState> {
-  client: ApolloClient<{}>;
+  client: Client;
 
   state: AppState = {
     isAuthenticated: localStorage.getItem('token') !== null,
