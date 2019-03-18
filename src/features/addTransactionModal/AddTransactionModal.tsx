@@ -1,6 +1,7 @@
-import React, { FocusEvent, SFC, useEffect, useState } from 'react';
+import React, { FocusEvent, SFC, useState } from 'react';
 import DayPicker from 'react-day-picker';
 import 'react-day-picker/lib/style.css'; // tslint:disable-line no-submodule-imports
+import { focusInput } from '../../global/helpers';
 import { AppContext } from '../app';
 import { Modal } from '../modal';
 import './addTransactionModal.scss';
@@ -25,12 +26,7 @@ const AddTransactionModal: SFC<AddTransactionModalProps> = () => {
     toggleDayPicker();
   };
 
-  useEffect(() => {
-    const input = document.querySelector<HTMLInputElement>('input[name=date]');
-    if (input) {
-      input.focus();
-    }
-  }, []);
+  focusInput('input[name="date"]');
 
   return (
     <AppContext.Consumer>

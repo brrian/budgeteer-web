@@ -10,7 +10,7 @@ import { Budget } from '../../features/budget';
 import { Transactions } from '../../features/transactions';
 import './base.scss';
 import { GET_USER_DATA } from './gql';
-import { getDate, updateTransaction } from './helpers';
+import { getDate, splitTransaction, updateTransaction } from './helpers';
 import { Categories, createStore, Transaction } from './store';
 
 interface UserData {
@@ -55,6 +55,7 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
         closeModal,
         modal,
         setModal,
+        splitTransaction: splitTransaction(store, dispatch, client),
         updateTransaction: updateTransaction(store, dispatch, client),
       }}
     >

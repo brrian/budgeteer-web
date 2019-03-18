@@ -81,7 +81,13 @@ const TransactionRow: SFC<TransactionRowProps> = ({ pos, transaction }) => (
               split={split}
             />
           ))}
-          {modal === `split-${transaction.id}` && <SplitTransactionModal />}
+          {modal === `split-${transaction.id}` && (
+            <SplitTransactionModal
+              categoryId={transaction.categoryId}
+              pos={pos}
+              transaction={transaction}
+            />
+          )}
           {modal === `update-${transaction.id}` && (
             <UpdateTransactionModal pos={pos} transaction={transaction} />
           )}

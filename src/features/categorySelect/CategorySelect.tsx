@@ -16,7 +16,12 @@ const CategorySelect: SFC<CategorySelect> = ({
 }) => (
   <div className="control is-expanded">
     <div className="select is-fullwidth">
-      <select defaultValue={defaultValue} name={name} onChange={onChange}>
+      <select
+        data-type="number"
+        defaultValue={defaultValue}
+        name={name}
+        onChange={onChange}
+      >
         {Object.keys(categories).map(categoryId => (
           <option
             dangerouslySetInnerHTML={{ __html: categories[categoryId] }}
