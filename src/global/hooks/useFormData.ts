@@ -1,8 +1,19 @@
-import { useState, FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
+import parseAmount from '../helpers/parseAmount';
 
-export const useFormData = <T>(
-  initialValues: T,
-  numberFields: { [key: string]: boolean } = {}
+const postProcessValue = (type: string, value: any) => {
+  switch (type) {
+    case 'number':
+      return Number(value);
+    case 'amount':
+      return parseAmount(value);
+    default:
+      throw new Error(`Unknown post-process type: ${type}`);
+  }
+};
+
+export default <T>(
+  initialValues: T
 ): {
   formData: T;
   onChange: (event: FormEvent<HTMLInputElement | HTMLSelectElement>) => void;
@@ -11,12 +22,14 @@ export const useFormData = <T>(
 
   return {
     formData,
-    onChange: event => {
-      const { name, value } = event.currentTarget;
+    onChange: ({ currentTarget }) => {
+      const { name, value } = currentTarget;
+
+      const type = currentTarget.getAttribute('data-type');
 
       setFormData({
         ...formData,
-        [name]: numberFields[name] ? Number(value) : value,
+        [name]: type ? postProcessValue(type, value) : value,
       });
     },
   };

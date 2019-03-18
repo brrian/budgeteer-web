@@ -2,7 +2,7 @@ import { startOfMonth } from 'date-fns';
 import { get } from 'lodash';
 import { Dispatch } from 'react';
 import { Client } from '../../features/app/App';
-import { UPDATE_SPLIT, UPDATE_TRANSACTION } from './gql';
+import { SPLIT_TRANSACTION, UPDATE_SPLIT, UPDATE_TRANSACTION } from './gql';
 import { Action, Split, State, Transaction } from './store';
 
 export const getDate = (month?: string, year?: string) => {
@@ -17,6 +17,40 @@ export const getDate = (month?: string, year?: string) => {
   }
 
   return date;
+};
+
+export const splitTransaction = (
+  store: State,
+  dispatch: Dispatch<Action>,
+  client: Client
+) => {
+  return (pos: string, splitPartial: Partial<Split>) => {
+    const { id } = get(store.transactions, pos);
+
+    const split = {
+      ...splitPartial,
+      id: `${new Date().getTime()}`,
+    } as Split;
+
+    dispatch({ type: 'split-transaction', payload: { pos, split } });
+
+    client
+      .mutate({
+        mutation: SPLIT_TRANSACTION,
+        variables: {
+          ...split,
+          transactionId: id,
+        },
+      })
+      .then(({ data: { splitTransaction: newSplit } }) => {
+        // Once we have the saved split, update the store with the database one.
+        // This ensures that it has the correct id instead of the temporary one.
+        dispatch({
+          type: 'set-transaction',
+          payload: { pos: `${pos}.splits[0]`, transaction: newSplit },
+        });
+      });
+  };
 };
 
 export const updateTransaction = (

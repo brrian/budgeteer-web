@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { set } from 'lodash';
+import { get, set } from 'lodash';
 import { useReducer } from 'react';
 
 export interface Categories {
@@ -30,7 +30,10 @@ export interface State {
   transactions: Transaction[];
 }
 
-export type Action = IntializeAction | SetTransactionAction;
+export type Action =
+  | IntializeAction
+  | SetTransactionAction
+  | SplitTransactionAction;
 
 interface IntializeAction {
   type: 'initialize';
@@ -45,6 +48,14 @@ interface SetTransactionAction {
   payload: {
     pos: string;
     transaction: Transaction | Split;
+  };
+}
+
+interface SplitTransactionAction {
+  type: 'split-transaction';
+  payload: {
+    pos: string;
+    split: Split;
   };
 }
 
@@ -63,6 +74,16 @@ const reducer = (state: State, action: Action) =>
       }
       case 'set-transaction': {
         set(draft.transactions, action.payload.pos, action.payload.transaction);
+        return;
+      }
+      case 'split-transaction': {
+        const { pos, split } = action.payload;
+
+        const transaction: Transaction = get(draft.transactions, pos);
+
+        transaction.amount -= split.amount;
+        transaction.splits.splice(0, 0, split);
+
         return;
       }
     }

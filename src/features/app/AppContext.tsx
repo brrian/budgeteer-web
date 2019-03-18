@@ -6,6 +6,7 @@ interface AppContext {
   closeModal: () => void;
   modal: string | false;
   setModal: (id: string) => void;
+  splitTransaction: (pos: string, updates: Partial<Split>) => void;
   updateTransaction: (
     type: string,
     pos: string,
@@ -21,6 +22,9 @@ export default createContext<AppContext>({
   modal: false,
   setModal() {
     throw new Error('setModal not defined');
+  },
+  splitTransaction() {
+    throw new Error('splitTransaction not defined');
   },
   updateTransaction() {
     throw new Error('updateTransaction not defined');

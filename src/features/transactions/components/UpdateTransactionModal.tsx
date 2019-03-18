@@ -1,5 +1,5 @@
 import React, { FormEvent, SFC } from 'react';
-import { useFormData } from '../../../global/hooks/useFormData';
+import { useFormData } from '../../../global/hooks';
 import { Transaction } from '../../../pages/base/store';
 import { AppContext } from '../../app';
 import { CategorySelect } from '../../categorySelect';
@@ -15,7 +15,7 @@ const UpdateTransactionModal: SFC<UpdateTransactionProps> = ({
   pos,
   transaction,
 }) => {
-  const { formData, onChange } = useFormData(transaction, { categoryId: true });
+  const { formData, onChange } = useFormData(transaction);
 
   return (
     <AppContext.Consumer>
@@ -49,7 +49,7 @@ const UpdateTransactionModal: SFC<UpdateTransactionProps> = ({
                 <CategorySelect
                   categories={categories}
                   defaultValue={`${formData.categoryId}`}
-                  onChange={onChange.bind(true)}
+                  onChange={onChange}
                 />
               </div>
               <div className="field">
