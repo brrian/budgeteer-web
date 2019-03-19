@@ -1,9 +1,28 @@
 import produce from 'immer';
-import { get, set } from 'lodash';
+import { get, set, sumBy } from 'lodash';
 import { useReducer } from 'react';
+
+export interface UserData {
+  budget: Budget;
+  categories: Categories;
+  stash: Stash;
+  transactions: Transaction[];
+}
+
+export interface Budget {
+  total: number;
+  categories: Array<{
+    id: number | string;
+    limit: number;
+  }>;
+}
 
 export interface Categories {
   [key: string]: string;
+}
+
+export interface Stash {
+  total: number;
 }
 
 export interface Transaction {
@@ -26,7 +45,9 @@ export interface Split {
 }
 
 export interface State {
+  budget?: Budget;
   categories: Categories;
+  stash?: Stash;
   transactions: Transaction[];
 }
 
@@ -37,10 +58,7 @@ export type Action =
 
 interface IntializeAction {
   type: 'initialize';
-  payload: {
-    categories: Categories;
-    transactions: Transaction[];
-  };
+  payload: UserData;
 }
 
 interface SetTransactionAction {
@@ -68,9 +86,22 @@ const reducer = (state: State, action: Action) =>
   produce(state, draft => {
     switch (action.type) {
       case 'initialize': {
-        draft.categories = action.payload.categories;
-        draft.transactions = action.payload.transactions;
-        return;
+        draft = action.payload;
+
+        if (draft.budget) {
+          const categoriesTotal = sumBy(draft.budget.categories, 'limit');
+
+          draft.budget.categories.push({
+            id: 'other',
+            limit: draft.budget.total - categoriesTotal,
+          });
+        }
+
+        if (draft.categories) {
+          draft.categories.other = 'Other';
+        }
+
+        return draft;
       }
       case 'set-transaction': {
         set(draft.transactions, action.payload.pos, action.payload.transaction);
