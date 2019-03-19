@@ -21,9 +21,11 @@
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.5",
     "react-tooltip": "^3.9.2",
+    "servor": "^2.0.3",
     "typescript": "3.3.3333"
   },
   "scripts": {
+    "serve": "servor build index.html 8080",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
