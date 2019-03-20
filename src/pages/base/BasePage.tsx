@@ -1,4 +1,4 @@
-import { format, subMonths } from 'date-fns';
+import { format, isSameMonth, subMonths } from 'date-fns';
 import React, { SFC, useEffect, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
@@ -11,12 +11,7 @@ import { Transactions } from '../../features/transactions';
 import './base.scss';
 import { GET_USER_DATA } from './gql';
 import { getDate, splitTransaction, updateTransaction } from './helpers';
-import { Categories, createStore, Transaction } from './store';
-
-interface UserData {
-  categories: Categories;
-  transactions: Transaction[];
-}
+import { createStore, UserData } from './store';
 
 interface RouteParams {
   month?: string;
@@ -38,7 +33,11 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
     document.title = `${format(date, 'MMM YYYY')} - Budgeteer`;
 
     client
-      .query({ query: GET_USER_DATA, variables: { date } })
+      .query({
+        fetchPolicy: 'no-cache',
+        query: GET_USER_DATA,
+        variables: { date },
+      })
       .then(({ data }: { data: UserData }) =>
         dispatch({ type: 'initialize', payload: data })
       );
@@ -88,7 +87,13 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
               </Link>
             </div>
             <div className="column is-3-desktop is-offset-1-desktop">
-              <Budget />
+              <Budget
+                budget={store.budget}
+                categories={store.categories}
+                isCurrentMonth={isSameMonth(date, new Date())}
+                stash={store.stash}
+                transactions={store.transactions}
+              />
             </div>
           </div>
         </div>

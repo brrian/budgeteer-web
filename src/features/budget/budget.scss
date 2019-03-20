@@ -1,6 +1,8 @@
 @import 'bulma/sass/utilities/_all.sass';
 @import '../../global/styles/utils.scss';
 
+$bar-transition: width 300ms ease-out;
+
 .budget {
   @include media('>tablet') {
     margin-top: -60px;
@@ -52,6 +54,8 @@
       line-height: 1;
       padding-right: 6px;
       position: absolute;
+      transition: $bar-transition;
+      z-index: 10;
     }
 
     &__marker {
@@ -61,6 +65,32 @@
       width: 1px;
       height: 100%;
       background-color: rgba(#000, .16);
+    }
+  }
+
+  &-progress {
+    background-color: $grey-lighter;
+    border-radius: 1rem;
+    height: 1rem;
+    overflow: hidden;
+    position: relative;
+
+    &__bar {
+      height: 100%;
+      transition: $bar-transition;
+      width: 0;
+
+      &.green {
+        background-color: $green;
+      }
+
+      &.yellow {
+        background-color: $yellow;
+      }
+
+      &.red {
+        background-color: $red;
+      }
     }
   }
 }
