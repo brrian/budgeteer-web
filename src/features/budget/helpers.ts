@@ -48,8 +48,10 @@ export const getTotals = (
 
     if (transaction.splits.length) {
       transaction.splits.forEach(split => {
-        total += split.amount;
-        incrementCategory(split.categoryId, split.amount);
+        if (!split.disabled) {
+          total += split.amount;
+          incrementCategory(split.categoryId, split.amount);
+        }
       });
     }
   });
