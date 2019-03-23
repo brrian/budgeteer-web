@@ -1,4 +1,5 @@
 import React, { FormEvent, SFC } from 'react';
+import { focusInput } from '../../../global/helpers';
 import { useFormData } from '../../../global/hooks';
 import { Transaction } from '../../../pages/base/store';
 import { AppContext } from '../../app';
@@ -16,6 +17,8 @@ const UpdateTransactionModal: SFC<UpdateTransactionProps> = ({
   transaction,
 }) => {
   const { formData, onChange } = useFormData(transaction);
+
+  focusInput('select[name="categoryId"]');
 
   return (
     <AppContext.Consumer>
