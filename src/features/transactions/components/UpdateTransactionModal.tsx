@@ -37,10 +37,10 @@ const UpdateTransactionModal: SFC<UpdateTransactionProps> = ({
                 <div className="control">
                   <input
                     className="input"
-                    defaultValue={formData.description}
                     name="description"
-                    onChange={onChange}
+                    readOnly={true}
                     type="text"
+                    value={formData.description}
                   />
                 </div>
               </div>
