@@ -1,4 +1,11 @@
-import { format, isSameMonth, subMonths } from 'date-fns';
+import {
+  addMonths,
+  format,
+  isBefore,
+  isSameMonth,
+  startOfMonth,
+  subMonths,
+} from 'date-fns';
 import React, { SFC, useEffect, useState } from 'react';
 import { withApollo } from 'react-apollo';
 import { RouteComponentProps } from 'react-router';
@@ -27,7 +34,6 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
   const [store, dispatch] = createStore();
 
   const date = getDate(params.month, params.year);
-  const prevMonth = subMonths(date, 1);
 
   useEffect(() => {
     document.title = `${format(date, 'MMM YYYY')} - Budgeteer`;
@@ -81,10 +87,18 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
               <Transactions transactions={store.transactions} />
               <Link
                 className="button is-light"
-                to={format(prevMonth, '/MMM/YYYY').toLowerCase()}
+                to={format(subMonths(date, 1), '/MMM/YYYY').toLowerCase()}
               >
                 Previous month
               </Link>
+              {isBefore(date, startOfMonth(new Date())) && (
+                <Link
+                  className="button is-light is-pulled-right"
+                  to={format(addMonths(date, 1), '/MMM/YYYY').toLowerCase()}
+                >
+                  Next month
+                </Link>
+              )}
             </div>
             <div className="column is-3-desktop is-offset-1-desktop">
               <Budget
