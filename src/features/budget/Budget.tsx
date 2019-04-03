@@ -77,7 +77,9 @@ const Budget: SFC<BudgetProps> = ({
             dayPercent={dayPercent || 100}
             isCurrentMonth={isCurrentMonth}
             key={id}
-            limit={otherLimit && id === 'other' ? otherLimit : catLimit}
+            limit={
+              otherLimit !== null && id === 'other' ? otherLimit : catLimit
+            }
             monthPercent={monthPercent || 100}
           />
         );
