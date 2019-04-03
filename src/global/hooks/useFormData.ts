@@ -17,8 +17,16 @@ export default <T>(
 ): {
   formData: T;
   onChange: (event: FormEvent<HTMLInputElement | HTMLSelectElement>) => void;
+  updateFormData: (name: string, value: any) => void;
 } => {
   const [formData, setFormData] = useState(initialValues);
+
+  const updateFormData = (name: string, value: any) => {
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
 
   return {
     formData,
@@ -27,10 +35,8 @@ export default <T>(
 
       const type = currentTarget.getAttribute('data-type');
 
-      setFormData({
-        ...formData,
-        [name]: type ? postProcessValue(type, value) : value,
-      });
+      updateFormData(name, type ? postProcessValue(type, value) : value);
     },
+    updateFormData,
   };
 };

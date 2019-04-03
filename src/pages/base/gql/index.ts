@@ -1,3 +1,4 @@
+export { ADD_TRANSACTION } from './addTransaction';
 export { GET_USER_DATA } from './getUserData';
 export { SPLIT_TRANSACTION } from './splitTransaction';
 export { UPDATE_SPLIT } from './updateSplit';

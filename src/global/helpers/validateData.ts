@@ -30,13 +30,28 @@ const validate = {
 
 export default (
   data: { [key: string]: any },
-  ruleSet: { [key: string]: string }
+  validationRules: {
+    [key: string]:
+      | string
+      | {
+          rules: string;
+          label: string;
+        };
+  }
 ) => {
   const errors: { [key: string]: string } = {};
   let hasErrors = false;
 
-  Object.keys(ruleSet).forEach(name => {
-    const rules = ruleSet[name].split('|').map(ruleWithArgs => {
+  Object.keys(validationRules).forEach(name => {
+    let ruleSet = validationRules[name];
+    let label = name;
+
+    if (typeof ruleSet === 'object') {
+      label = ruleSet.label;
+      ruleSet = ruleSet.rules;
+    }
+
+    const rules = ruleSet.split('|').map(ruleWithArgs => {
       const [rule, ...args] = ruleWithArgs.split(':');
       return { rule, args } as { rule: Rule; args: any[] };
     });
@@ -53,7 +68,7 @@ export default (
       hasErrors = true;
       const { message } = validate[failedRule.rule];
       errors[name] = message
-        .replace(':attribute', name)
+        .replace(':attribute', label)
         .replace(/:value\[(\d+)\]/g, (match, value) => failedRule.args[value]);
     }
   });

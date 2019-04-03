@@ -1,9 +1,61 @@
-import { startOfMonth } from 'date-fns';
-import { get } from 'lodash';
+import { isBefore, isSameMonth, parse, startOfMonth } from 'date-fns';
+import { findLastIndex, get } from 'lodash';
 import { Dispatch } from 'react';
 import { Client } from '../../features/app/App';
-import { SPLIT_TRANSACTION, UPDATE_SPLIT, UPDATE_TRANSACTION } from './gql';
+import {
+  ADD_TRANSACTION,
+  SPLIT_TRANSACTION,
+  UPDATE_SPLIT,
+  UPDATE_TRANSACTION,
+} from './gql';
 import { Action, Split, State, Transaction } from './store';
+
+export const addTransaction = (
+  store: State,
+  dispatch: Dispatch<Action>,
+  client: Client
+) => {
+  return async (transaction: Transaction) => {
+    const transactionDate = parse(transaction.date);
+    const shouldUpdateStore = isSameMonth(new Date(), transactionDate);
+
+    let index: number | null = null;
+    if (shouldUpdateStore) {
+      index =
+        findLastIndex(store.transactions, item =>
+          isBefore(transactionDate, parse(item.date))
+        ) + 1;
+
+      dispatch({ type: 'add-transaction', payload: { index, transaction } });
+    }
+
+    const {
+      data: {
+        addTransaction: {
+          stashTotal,
+          transaction: newTransaction,
+          updatedStash,
+        },
+      },
+    } = await client.mutate({
+      mutation: ADD_TRANSACTION,
+      variables: transaction,
+    });
+
+    if (updatedStash) {
+      dispatch({ type: 'update-stash', payload: stashTotal });
+    }
+
+    // With the saved transaction, update the store with the database one.
+    // This ensures that it has the correct id instead of the temporary one.
+    if (index !== null && shouldUpdateStore) {
+      dispatch({
+        type: 'set-transaction',
+        payload: { pos: `[${index}]`, transaction: newTransaction },
+      });
+    }
+  };
+};
 
 export const getDate = (month?: string, year?: string) => {
   const date = startOfMonth(new Date());
