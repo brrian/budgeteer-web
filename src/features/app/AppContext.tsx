@@ -2,6 +2,7 @@ import { createContext } from 'react';
 import { Categories, Split, Transaction } from '../../pages/base/store';
 
 interface AppContext {
+  addTransaction: (transaction: Transaction) => void;
   categories: Categories;
   closeModal: () => void;
   modal: string | false;
@@ -15,6 +16,9 @@ interface AppContext {
 }
 
 export default createContext<AppContext>({
+  addTransaction() {
+    throw new Error('addTransaction not defined');
+  },
   categories: {},
   closeModal() {
     throw new Error('closeModal not defined');

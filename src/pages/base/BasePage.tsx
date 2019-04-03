@@ -17,7 +17,12 @@ import { Budget } from '../../features/budget';
 import { Transactions } from '../../features/transactions';
 import './base.scss';
 import { GET_USER_DATA } from './gql';
-import { getDate, splitTransaction, updateTransaction } from './helpers';
+import {
+  addTransaction,
+  getDate,
+  splitTransaction,
+  updateTransaction,
+} from './helpers';
 import { createStore, UserData } from './store';
 
 interface RouteParams {
@@ -56,6 +61,7 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
   return (
     <AppContext.Provider
       value={{
+        addTransaction: addTransaction(store, dispatch, client),
         categories: store.categories,
         closeModal,
         modal,

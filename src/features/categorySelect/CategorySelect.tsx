@@ -3,14 +3,14 @@ import { Categories } from '../../pages/base/store';
 
 interface CategorySelect {
   categories: Categories;
-  defaultValue: string;
+  defaultValue?: string;
   name?: string;
   onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
 }
 
 const CategorySelect: SFC<CategorySelect> = ({
   categories,
-  defaultValue,
+  defaultValue = '',
   name = 'categoryId',
   onChange,
 }) => (
@@ -22,6 +22,9 @@ const CategorySelect: SFC<CategorySelect> = ({
         name={name}
         onChange={onChange}
       >
+        <option disabled={true} value="">
+          Please select
+        </option>
         {Object.keys(categories).map(categoryId => (
           <option
             dangerouslySetInnerHTML={{ __html: categories[categoryId] }}

@@ -52,9 +52,19 @@ export interface State {
 }
 
 export type Action =
+  | AddTransactionAction
   | IntializeAction
   | SetTransactionAction
-  | SplitTransactionAction;
+  | SplitTransactionAction
+  | UpdateSashAction;
+
+interface AddTransactionAction {
+  type: 'add-transaction';
+  payload: {
+    index: number;
+    transaction: Transaction;
+  };
+}
 
 interface IntializeAction {
   type: 'initialize';
@@ -77,6 +87,11 @@ interface SplitTransactionAction {
   };
 }
 
+interface UpdateSashAction {
+  type: 'update-stash';
+  payload: number;
+}
+
 const initialState = {
   categories: {},
   transactions: [],
@@ -85,8 +100,16 @@ const initialState = {
 const reducer = (state: State, action: Action) =>
   produce(state, draft => {
     switch (action.type) {
+      case 'add-transaction': {
+        const { index, transaction } = action.payload;
+
+        draft.transactions.splice(index, 0, transaction);
+
+        return;
+      }
+
       case 'initialize': {
-        draft = action.payload;
+        draft = { ...draft, ...action.payload };
 
         if (draft.budget) {
           const categoriesTotal = sumBy(draft.budget.categories, 'limit');
@@ -103,10 +126,12 @@ const reducer = (state: State, action: Action) =>
 
         return draft;
       }
+
       case 'set-transaction': {
         set(draft.transactions, action.payload.pos, action.payload.transaction);
         return;
       }
+
       case 'split-transaction': {
         const { pos, split } = action.payload;
 
@@ -115,6 +140,13 @@ const reducer = (state: State, action: Action) =>
         transaction.amount -= split.amount;
         transaction.splits.splice(0, 0, split);
 
+        return;
+      }
+
+      case 'update-stash': {
+        if (draft.stash) {
+          draft.stash.total = action.payload;
+        }
         return;
       }
     }
