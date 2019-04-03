@@ -19,15 +19,23 @@ const BudgetItem: SFC<BudgetItem> = ({
   limit,
   monthPercent,
 }) => {
-  const percent = Math.round((currentSpending / limit) * 100);
+  let percent = Math.round((currentSpending / limit) * 100);
+  if (isNaN(percent)) {
+    percent = 0;
+  } else if (limit < 0) {
+    percent = -Infinity;
+  }
+
   const percentDelta = percent - monthPercent;
 
-  const target = limit * (monthPercent / 100);
+  const target = limit > 0 ? limit * (monthPercent / 100) : limit;
 
   const spending = Math.round(target - currentSpending);
   const spendingDelta = Math.ceil((monthPercent - percent) / dayPercent);
 
   const overOrUnder = spending > 0 ? 'under' : 'over';
+
+  const barWidth = `${percent > 100 || percent < 0 ? 100 : percent}%`;
 
   return (
     <div
@@ -39,9 +47,11 @@ const BudgetItem: SFC<BudgetItem> = ({
           <>
             <span
               className="budget-category__delta"
-              style={{ width: `${percent > 100 ? 100 : percent}%` }}
+              style={{ width: barWidth }}
             >
-              {spendingDelta > 0 ? `+${spendingDelta}` : spendingDelta}
+              {spendingDelta > 0
+                ? `+${spendingDelta}`
+                : spendingDelta.toString().replace('Infinity', '∞')}
             </span>
             <span
               className="budget-category__marker"
@@ -51,8 +61,11 @@ const BudgetItem: SFC<BudgetItem> = ({
         )}
         <div className="budget-progress">
           <div
-            className={`budget-progress__bar ${getProgressColor(percentDelta)}`}
-            style={{ width: `${percent > 100 ? 100 : percent}%` }}
+            className={`budget-progress__bar ${getProgressColor(
+              percent,
+              percentDelta
+            )}`}
+            style={{ width: barWidth }}
           />
         </div>
       </div>

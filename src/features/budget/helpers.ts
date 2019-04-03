@@ -9,10 +9,10 @@ interface BudgetTotals {
   };
 }
 
-export const getProgressColor = (delta: number) => {
-  if (delta <= 0) {
+export const getProgressColor = (percent: number, delta: number) => {
+  if (percent > 0 && delta <= 0) {
     return 'green';
-  } else if (delta <= 7) {
+  } else if (percent > 0 && delta <= 7) {
     return 'yellow';
   } else {
     return 'red';
