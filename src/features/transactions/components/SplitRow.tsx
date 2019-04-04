@@ -59,7 +59,9 @@ const SplitRow: SFC<SplitRowProps> = ({ pos, split }) => (
               </div>
             </div>
           </div>
-          {modal === `update-${split.id}` && <UpdateSplitModal />}
+          {modal === `update-${split.id}` && (
+            <UpdateSplitModal pos={pos} split={split} />
+          )}
         </>
       );
     }}
