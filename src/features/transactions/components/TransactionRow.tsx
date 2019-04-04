@@ -63,9 +63,12 @@ const TransactionRow: SFC<TransactionRowProps> = ({ pos, transaction }) => (
                   <span data-tip={transaction.note}>&dagger;</span>
                 )}
               </div>
-              <div className="transactions-row__category">
-                {categories[transaction.categoryId]}
-              </div>
+              <div
+                className="transactions-row__category"
+                dangerouslySetInnerHTML={{
+                  __html: categories[transaction.categoryId],
+                }}
+              />
               <div className="transactions-row__amount">
                 {transaction.amount.toLocaleString('en-US', {
                   style: 'currency',

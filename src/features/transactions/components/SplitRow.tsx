@@ -48,9 +48,12 @@ const SplitRow: SFC<SplitRowProps> = ({ pos, split }) => (
               <div className="transactions-row__description is-split">
                 {split.note && <span data-tip={split.note}>&dagger;</span>}
               </div>
-              <div className="transactions-row__category">
-                {categories[split.categoryId]}
-              </div>
+              <div
+                className="transactions-row__category"
+                dangerouslySetInnerHTML={{
+                  __html: categories[split.categoryId],
+                }}
+              />
               <div className="transactions-row__amount">
                 {split.amount.toLocaleString('en-US', {
                   style: 'currency',
