@@ -19,6 +19,7 @@ import './base.scss';
 import { GET_USER_DATA } from './gql';
 import {
   addTransaction,
+  deleteTransaction,
   getDate,
   splitTransaction,
   updateTransaction,
@@ -64,6 +65,7 @@ const BasePage: SFC<BasePageProps> = ({ client, match: { params } }) => {
         addTransaction: addTransaction(store, dispatch, client),
         categories: store.categories,
         closeModal,
+        deleteTransaction: deleteTransaction(store, dispatch, client),
         modal,
         setModal,
         splitTransaction: splitTransaction(store, dispatch, client),

@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { get, set, sumBy } from 'lodash';
+import { get, set, sumBy, unset } from 'lodash';
 import { useReducer } from 'react';
 
 export interface UserData {
@@ -53,6 +53,7 @@ export interface State {
 
 export type Action =
   | AddTransactionAction
+  | DeleteTransactionAction
   | IntializeAction
   | SetTransactionAction
   | SplitTransactionAction
@@ -64,6 +65,11 @@ interface AddTransactionAction {
     index: number;
     transaction: Transaction;
   };
+}
+
+interface DeleteTransactionAction {
+  type: 'delete-transaction';
+  payload: string;
 }
 
 interface IntializeAction {
@@ -104,6 +110,24 @@ const reducer = (state: State, action: Action) =>
         const { index, transaction } = action.payload;
 
         draft.transactions.splice(index, 0, transaction);
+
+        return;
+      }
+
+      case 'delete-transaction': {
+        const pos = action.payload;
+
+        // If we are deleting a split, we need to update the parent transaction
+        if (pos.indexOf('splits') !== -1) {
+          const [transactionPos] = pos.split('.');
+
+          const transaction = get(draft.transactions, transactionPos);
+          const split = get(draft.transactions, pos);
+
+          transaction.amount += split.amount;
+        }
+
+        unset(draft.transactions, action.payload);
 
         return;
       }

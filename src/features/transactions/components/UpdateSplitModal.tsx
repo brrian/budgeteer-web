@@ -16,11 +16,17 @@ const UpdateSplitModal: SFC<UpdateSplit> = ({ pos, split }) => {
 
   return (
     <AppContext.Consumer>
-      {({ categories, closeModal, updateTransaction }) => {
+      {({ categories, closeModal, deleteTransaction, updateTransaction }) => {
         const handleFormSubmit = (event: FormEvent) => {
           event.preventDefault();
 
           updateTransaction('split', pos, formData);
+
+          closeModal();
+        };
+
+        const handleSplitDelete = () => {
+          deleteTransaction('split', pos, split.id);
 
           closeModal();
         };
@@ -47,9 +53,7 @@ const UpdateSplitModal: SFC<UpdateSplit> = ({ pos, split }) => {
                 <div className="control">
                   <ConfirmationButton
                     classNames="is-text has-text-danger"
-                    handleClick={() => {
-                      console.log('delete');
-                    }}
+                    handleClick={handleSplitDelete}
                     label="Delete"
                   />
                 </div>

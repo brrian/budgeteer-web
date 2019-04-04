@@ -5,6 +5,7 @@ interface AppContext {
   addTransaction: (transaction: Transaction) => void;
   categories: Categories;
   closeModal: () => void;
+  deleteTransaction: (type: string, pos: string, id: string) => void;
   modal: string | false;
   setModal: (id: string) => void;
   splitTransaction: (pos: string, updates: Partial<Split>) => void;
@@ -22,6 +23,9 @@ export default createContext<AppContext>({
   categories: {},
   closeModal() {
     throw new Error('closeModal not defined');
+  },
+  deleteTransaction() {
+    throw new Error('deleteTransaction not defined');
   },
   modal: false,
   setModal() {
