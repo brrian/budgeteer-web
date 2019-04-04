@@ -22,11 +22,17 @@ const UpdateTransactionModal: SFC<UpdateTransactionProps> = ({
 
   return (
     <AppContext.Consumer>
-      {({ categories, closeModal, updateTransaction }) => {
+      {({ categories, closeModal, deleteTransaction, updateTransaction }) => {
         const handleFormSubmit = (event: FormEvent) => {
           event.preventDefault();
 
           updateTransaction('transaction', pos, formData);
+
+          closeModal();
+        };
+
+        const handleTransactionDelete = () => {
+          deleteTransaction('transaction', pos, transaction.id);
 
           closeModal();
         };
@@ -71,9 +77,7 @@ const UpdateTransactionModal: SFC<UpdateTransactionProps> = ({
                 <div className="control">
                   <ConfirmationButton
                     classNames="is-text has-text-danger"
-                    handleClick={() => {
-                      console.log('delete');
-                    }}
+                    handleClick={handleTransactionDelete}
                     label="Delete"
                   />
                 </div>

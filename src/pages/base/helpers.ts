@@ -4,6 +4,8 @@ import { Dispatch } from 'react';
 import { Client } from '../../features/app/App';
 import {
   ADD_TRANSACTION,
+  DELETE_SPLIT,
+  DELETE_TRANSACTION,
   SPLIT_TRANSACTION,
   UPDATE_SPLIT,
   UPDATE_TRANSACTION,
@@ -53,6 +55,22 @@ export const addTransaction = (
         type: 'set-transaction',
         payload: { pos: `[${index}]`, transaction: newTransaction },
       });
+    }
+  };
+};
+
+export const deleteTransaction = (
+  store: State,
+  dispatch: Dispatch<Action>,
+  client: Client
+) => {
+  return (type: string, pos: string, id: string) => {
+    dispatch({ type: 'delete-transaction', payload: pos });
+
+    if (type === 'transaction') {
+      client.mutate({ mutation: DELETE_TRANSACTION, variables: { id } });
+    } else if (type === 'split') {
+      client.mutate({ mutation: DELETE_SPLIT, variables: { id } });
     }
   };
 };
