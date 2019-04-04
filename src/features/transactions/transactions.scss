@@ -24,12 +24,12 @@
     &__actions {
       align-items: center;
       background-color: #fff;
-      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, #fff 15%);
+      background: linear-gradient(90deg, #fff 85%, rgba(255,255,255,0) 100%);
       display: none;
       height: 100%;
-      padding-left: 42px;
+      left: 0;
+      padding-right: 42px;
       position: absolute;
-      right: 0;
       white-space: nowrap;
       z-index: 10;
 
